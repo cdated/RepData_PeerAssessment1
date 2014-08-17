@@ -27,7 +27,8 @@ Mean total number of steps taken per day
 Draw the histogram of the steps by date.
 
 ```{r, fig.height=5, fig.width=5}
-hist(stepsByDate, breaks=10,main="Steps by Date Histogram",xlab="Total Number of Steps by Date",ylab="Frequency",col='orange')
+hist(stepsByDate, breaks=10,main="Steps by Date Histogram",
+     xlab="Total Number of Steps by Date",ylab="Frequency",col='orange')
 ```
 
 Calculate the mean and median of the daily steps values.
@@ -51,7 +52,9 @@ Get the average number of steps for each time interval and remove NAs.  Plot the
 ```{r}
 intervalSteps = activity[,c('steps', 'interval')]
 avgByInterval <- aggregate(.~interval, data=intervalSteps, mean, na.rm=TRUE)
-plot(steps ~ interval, data=avgByInterval, type='l', main="Average # of Steps Across All Days by Interval", xlab="Intervals", ylab="Average # of Steps")
+plot(steps ~ interval, data=avgByInterval, type='l',
+     main="Average # of Steps Across All Days by Interval",
+     xlab="Intervals", ylab="Average # of Steps")
 ```
 
 <sup>Note - Intervals written as HHMM where first two digits represent hours and second two represent minutes.</sup>
@@ -86,7 +89,8 @@ To address all the missing data we can substitute NA steps values with the avera
 
 ```{r}
 intervalMerge <- merge(activity, avgByInterval, by="interval", suffixes=c(".orig", ".avg"))
-intervalMerge$steps <- ifelse(is.na(intervalMerge$steps.orig), intervalMerge$steps.avg, intervalMerge$steps.orig)
+intervalMerge$steps <- ifelse(is.na(intervalMerge$steps.orig), intervalMerge$steps.avg,
+                              intervalMerge$steps.orig)
 filledData <- intervalMerge[,c('steps', 'date', 'interval')]
 head(filledData)
 ```
@@ -101,7 +105,8 @@ stepsByDate <- stepsByDate[,2]
 Draw the histogram of the steps by date for the filled in data.
 
 ```{r, fig.height=5, fig.width=5}
-hist(stepsByDate, breaks=10,main="Steps by Date Histogram - Replaced NAs",xlab="Total Number of Steps by Date",ylab="Frequency",col='red')
+hist(stepsByDate, breaks=10,main="Steps by Date Histogram - Replaced NAs",
+     xlab="Total Number of Steps by Date",ylab="Frequency",col='red')
 ```
 
 Calculate the new mean and median of the daily steps values.
@@ -139,8 +144,8 @@ Add a new columns day using the weekdays function to convert dates to day names.
 
 ```{r}
 filledData$day<- weekdays(as.Date(filledData$date))
-filledData$dayType <- ifelse(filledData$day %in% c("Saturday", "Sunday"), "weekend", 
-    "weekday")
+filledData$dayType <- ifelse(filledData$day %in% c("Saturday", "Sunday"),
+                             "weekend", "weekday")
 filledDataAvgs <- ddply(filledData, .(interval, dayType), summarise, steps = mean(steps))
 ```
 

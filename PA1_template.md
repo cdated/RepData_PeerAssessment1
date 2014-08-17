@@ -30,7 +30,8 @@ Draw the histogram of the steps by date.
 
 
 ```r
-hist(stepsByDate, breaks=10,main="Steps by Date Histogram",xlab="Total Number of Steps by Date",ylab="Frequency",col='orange')
+hist(stepsByDate, breaks=10,main="Steps by Date Histogram",
+     xlab="Total Number of Steps by Date",ylab="Frequency",col='orange')
 ```
 
 ![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
@@ -58,7 +59,9 @@ Get the average number of steps for each time interval and remove NAs.  Plot the
 ```r
 intervalSteps = activity[,c('steps', 'interval')]
 avgByInterval <- aggregate(.~interval, data=intervalSteps, mean, na.rm=TRUE)
-plot(steps ~ interval, data=avgByInterval, type='l', main="Average # of Steps Across All Days by Interval", xlab="Intervals", ylab="Average # of Steps")
+plot(steps ~ interval, data=avgByInterval, type='l',
+     main="Average # of Steps Across All Days by Interval",
+     xlab="Intervals", ylab="Average # of Steps")
 ```
 
 ![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
@@ -98,7 +101,8 @@ To address all the missing data we can substitute NA steps values with the avera
 
 ```r
 intervalMerge <- merge(activity, avgByInterval, by="interval", suffixes=c(".orig", ".avg"))
-intervalMerge$steps <- ifelse(is.na(intervalMerge$steps.orig), intervalMerge$steps.avg, intervalMerge$steps.orig)
+intervalMerge$steps <- ifelse(is.na(intervalMerge$steps.orig), intervalMerge$steps.avg,
+                              intervalMerge$steps.orig)
 filledData <- intervalMerge[,c('steps', 'date', 'interval')]
 head(filledData)
 ```
@@ -125,7 +129,8 @@ Draw the histogram of the steps by date for the filled in data.
 
 
 ```r
-hist(stepsByDate, breaks=10,main="Steps by Date Histogram - Replaced NAs",xlab="Total Number of Steps by Date",ylab="Frequency",col='red')
+hist(stepsByDate, breaks=10,main="Steps by Date Histogram - Replaced NAs",
+     xlab="Total Number of Steps by Date",ylab="Frequency",col='red')
 ```
 
 ![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10.png) 
@@ -177,8 +182,8 @@ Add a new columns day using the weekdays function to convert dates to day names.
 
 ```r
 filledData$day<- weekdays(as.Date(filledData$date))
-filledData$dayType <- ifelse(filledData$day %in% c("Saturday", "Sunday"), "weekend", 
-    "weekday")
+filledData$dayType <- ifelse(filledData$day %in% c("Saturday", "Sunday"),
+                             "weekend", "weekday")
 filledDataAvgs <- ddply(filledData, .(interval, dayType), summarise, steps = mean(steps))
 ```
 
